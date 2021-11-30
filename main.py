@@ -33,7 +33,7 @@ def send_message(ws, message):
 
 
 def connection():
-    websocket.enableTrace(True)
+    websocket.enableTrace(False)
     if len(sys.argv) < 2:
         host = "ws://127.0.0.1:8080/telephon"
     else:

@@ -1,9 +1,6 @@
 import csv
-import string
-from re import split
 from tkinter import BOTH
-from tkinter.ttk import Frame, Button
-
+from tkinter.ttk import Frame
 from tksheet import Sheet
 
 
@@ -13,22 +10,27 @@ def table(frame_parent, data):
     ft.grid_rowconfigure(0, weight=1)
     master = Frame(ft)
     header = str.split(data['Columns'], ',')
+    # header = header.insert(0, "udi")
     r = str.split(data['Values'], '/n')
 
     table = TkSheetTable(master, header, ("edit-cell", ""))
 
     reader = csv.reader(r)
-    k=0
+    k = 0
     for row in reader:
-        k=k+1
-        table.add_row(table.rowCount,row)
+        k = k + 1
+        # row = "," + row
+        table.add_row(table.rowCount, row)
     # table_frame.sheet.highlight_cells(row=1, column=1, bg="red")
     # table_frame.sheet.highlight_columns(1, bg="yellow")
+    table.sheet.insert_column(idx=1)
+
     ft.pack(side="bottom", fill=BOTH, expand=1)
 
 
-class TkSheetTable():
+class TkSheetTable:
     def __init__(self, master, header, bindings):
+        self.colWidth = None
         self.master = master
         self.rowCount = 0
         self.colCount = len(header)
@@ -46,9 +48,9 @@ class TkSheetTable():
                            # row_index_align = "w",
                            # theme = "green",
                            theme="dark green",
-                           # data = [[f"Row {r}, Column {c}\nnewline1\nnewline2" for c in range(30)] for r in range(100)], #to set sheet data at startup
-                           # data = [[1,2,3,4,5], ["dsfsdf","dss3werwe","dswrwer"]],
-                           # headers = [f"Column {c}\nnewline1\nnewline2" for c in range(30)],
+                           # data = [[f"Row {r}, Column {c}\nnewline1\nnewline2" for c in range(30)] for r in range(
+                           # 100)], #to set sheet data at startup data = [[1,2,3,4,5], ["dsfsdf","dss3werwe",
+                           # "dswrwer"]], headers = [f"Column {c}\nnewline1\nnewline2" for c in range(30)],
                            headers=header,
                            # row_index = [f"Row {r}\nnewline1\nnewline2" for r in range(2000)],
                            # set_all_heights_and_widths = True, #to fit all cell sizes to text at start up
@@ -276,7 +278,9 @@ class TkSheetTable():
     """
 
     def begin_edit_cell(self, event):
-        pass
+        k = self.sheet.get_cell_data(event.row, event.column)
+        print(k.id)
+        print(event)
 
     def window_resized(self, event):
         # pass
@@ -332,8 +336,3 @@ class TkSheetTable():
     def drag_select_columns(self, response):
         pass
         # print (response)
-
-    def begin_edit_cell(self, response):
-        k = self.sheet.get_cell_data(response.row, response.column)
-        print(k.id)
-        print(response)
